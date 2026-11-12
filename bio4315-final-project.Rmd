@@ -4,12 +4,41 @@ author: "Catherine"
 date: "2026-11-05"
 output: html_document
 ---
-## QC Long Reads
+## Loading library package 
 ```{r}
-# QC Long read
+# library("IRanges")
+# library("GenomicRanges")
+# library("Rsamtools")
+# library("GenomicAlignments")
+# library("Gviz")
+```
+
+## QC Long Reads
+```{bash}
 # sequali --outdir outputs/sequali_reports data/Data_2026/saccharomycesParadoxus2026.fastq
 # sequali --outdir outputs/sequali_reports data/Data_2026/saccharomycesBayanus2026.fastq
 ```
+
+## Assembly using Flye 
+```{bash}
+# flye --nano-raw data/Data_2026/saccharomycesParadoxus2026.fastq --out-dir outputs/flye_output/saccharomycesParadoxus2026 --threads 8 --genome-size 12m
+# flye --nano-raw data/Data_2026/saccharomycesBayanus2026.fastq --out-dir outputs/flye_output/saccharomycesBayanus2026 --threads 8 --genome-size 12m
+```
+
+
+## Evaluating the assembly using BUSCO 
+```{bash}
+
+
+```
+
+
+## Evaluating the assembly using quast 
+```{bash}
+
+
+```
+
 
 
 
