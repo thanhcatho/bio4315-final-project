@@ -2,7 +2,9 @@
 title: "BIO4315 - FINAL PROJECT"
 author: "Catherine"
 date: "2026-11-05"
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
 ## Loading library package 
 ```{r}
@@ -68,7 +70,96 @@ ezlabgva/busco:v6.0.0_cv1 \
 ```
 
 
+## funanotation
+```{bash}
+# Run saccharomycesParadoxus2026
+
+# Define reusable variables
+IMAGE="nextgenusfs/funannotate:v1.8.15"
+PLATFORM="--platform linux/amd64"
+CPUS=8
+
+INPUT="outputs/medaka_output/medaka_round2/saccharomycesParadoxus2026/consensus.fasta"
+SPECIES="Saccharomyces paradoxus"   
+STRAIN="CP8-A_JSN"       
+
+# Step 1: Clean redundant/short contigs ("genomic dust")
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate clean \
+-i $INPUT \
+-o data/S.paradoxus/assembly_clean.fasta
+
+# Step 2: Sort contigs by length and standardize header names (scaffold_1, etc.)
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate sort \
+-i data/S.paradoxus/assembly_clean.fasta \
+-o data/S.paradoxus/assembly_sorted.fasta
+
+# Step 3: Soft-mask repetitive elements
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate mask \
+-i data/S.paradoxus/assembly_sorted.fasta \
+-o data/S.paradoxus/assembly_masked.fasta \
+--cpus $CPUS
+
+# Step 4: Predict gene models using Saccharomycetes BUSCO models for training
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate predict \
+-i data/S.paradoxus/assembly_masked.fasta \
+-o outputs/funannotate_output/S.paradoxus \
+-s "$SPECIES" \
+--strain "$STRAIN" \
+--busco_db dikarya \
+--cpus $CPUS
 
 
+# RUN saccharomycesBayanus2026 
+
+# Define reusable variables
+IMAGE="nextgenusfs/funannotate:v1.8.15"
+PLATFORM="--platform linux/amd64"
+CPUS=8
+
+INPUT="outputs/medaka_output/medaka_round2/saccharomycesBayanus2026/consensus.fasta"
+SPECIES="Saccharomyces Bayanus"   
+STRAIN="LV3C-1_JST"       
+
+# Step 1: Clean redundant/short contigs ("genomic dust")
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate clean \
+-i $INPUT \
+-o data/S.bayanus/assembly_clean.fasta
+
+# Step 2: Sort contigs by length and standardize header names (scaffold_1, etc.)
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate sort \
+-i data/S.bayanus/assembly_clean.fasta \
+-o data/S.bayanus/assembly_sorted.fasta
+
+# Step 3: Soft-mask repetitive elements
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate mask \
+-i data/S.bayanus/assembly_sorted.fasta \
+-o data/S.bayanus/assembly_masked.fasta \
+--cpus $CPUS
+
+# Step 4: Predict gene models using Saccharomycetes BUSCO models for training
+docker run -u $(id -u):$(id -g) --rm -v "$PWD":/data -w /data $PLATFORM $IMAGE \
+funannotate predict \
+-i data/S.bayanus/assembly_masked.fasta \
+-o outputs/funannotate_output/S.bayanus \
+-s "$SPECIES" \
+--strain "$STRAIN" \
+--busco_db dikarya \
+--cpus $CPUS
+
+
+```
+
+
+## eggNogmapper
+```
+
+```
 
 
